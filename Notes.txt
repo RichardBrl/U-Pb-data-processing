@@ -1,0 +1,33 @@
+a. Time-Column sollte als Spalte A enthalten sein -> Check
+b. Header should be like in the original result file (with Hg, U, Pb)
+b1. Should be Shown like : U235(LR)
+b2. We need to be able to input:
+	1. Element (e.g., Mass01 = U235) -> This inputs the element into the output file
+	2. Resolution (e.g., Low = LR , Medium = MR, High = HR) -> This inputs (LR), (MR), (HR) after the element
+	3. Regarding 2.2.: "Skip first channel if saturated" = yes / no -> This enables / disables step 2.2., it is enabled by default
+	4.1 Regarding 2., mean average above 500000: "Minimum cps to calculate ACF" = (any number can be input here, 500k by default)
+	4.2 "Maximum cps to calculate ACF" = (any number can be input here, 50 000 000 by default, cps saturate at 5 mln, this is required by the lab boss)
+
+
+ACF: Ignore the ACF in the Excel Sheet, as this is machine calculated! Need to be calculated separately. The calculated ACF does NOT need to be multiplied by 64!
+1. Check where it's needed (where Counting is saturated and analog is needed instead)
+2. Calculate the ACF everywhere it's possible (Counting valid (not saturated, mean average above 500.000 CPS) and an analog reading)
+	2.1. Analog / Count for each matching column (1st mass03p Collum with the 1st mass03a Column), calculate the mean of these ratios for each mass, for every row where 	it's applicable, for each mass seperately.
+	2.2. If only the first row of the counting is saturated, this first entry is ignored (correspondingly also the first analog value), but the ACF can still be calculated 
+		using the other values in that row (if ONLY the first row is saturated!).
+	2.3 If any other value is saturated, the ACF can't be calculated for this row of this mass! Skip to the next mass of this row.
+	2.4 The mean average of the counting is calculated (if 2.2. applies, the 1st value will be ignored for this), if this mean average is above 500k, the ACF can be 	calculated. It is not important if some individual values in this row for this mass are below 500k.
+
+
+3. Interpolating the ACF for saturated Counting rows:
+	3.1. Code should check 50 calculated ACFs above the row of interest and 50 calculated below
+	3.2. If there aren't 50 calculated values available in the sheet where this calculation is taking place, calculated ACF values from the previous or following sheet are 		used, until either 50 ACFs are available or the beginning/end of the file is reached.
+	3.3. Simple average of 50 calculated rows above and 50 calculated below.
+
+
+	!!! So in practice, first calculate the ACF for all sheets, then interpolate like described in 3.
+
+
+This is planned, but as a last step:
+	4. Weighted influence of calculated ACFs based on time distance to the row of interest. (The farther the time is away, the less weight it has).
+
