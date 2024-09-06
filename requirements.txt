@@ -1,4 +1,4 @@
 pandas
 pyxlsb
-tqdm.auto
+tqdm
 re
