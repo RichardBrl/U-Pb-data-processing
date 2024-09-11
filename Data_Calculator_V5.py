@@ -7,3 +7,5 @@ import openpyxl
 from tqdm.auto import tqdm # Ladebalken, optional
 import re
 
+input_file = r'./input_files/2024-05-25 Seq1 All csv.xlsb'
+output_file = r'./output_files/StatDat_.xlsx'
